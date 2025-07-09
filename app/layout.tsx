@@ -17,29 +17,23 @@ export const metadata: Metadata = {
   title: "NoteSync",
   description: "Capture your ideas, anytime, anywhere.",
   keywords: ["NoteSync", "note-taking app", "online notes", "cloud notes", "secure notes", "productivity"],
-  authors: [{ name: "Vinod Kumar", url: "https://www.vinodjangid.site" }],
-  creator: "Vinod Kumar",
+  authors: [{ name: "krish koli", url: "https://interactive-portfolio-gold.vercel.app/" }],
+  creator: "Krish koli",
   openGraph: {
     title: "NoteSync - Capture Your Ideas, Anytime, Anywhere",
     description: "A cloud-based note-taking app that helps you organize and access your notes securely from anywhere.",
-    url: "https://notesync-site.netlify.app/",
+    url: "",
     siteName: "NoteSync",
     images: [
       {
-        url: "https://notesync-site.netlify.app/images/ogimage.png",
+        // url: "https://notesync-site.netlify.app/images/ogimage.png",
+        url: "https://interactive-portfolio-gold.vercel.app/images/ogimage.png",
         width: 1200,
         height: 630,
         alt: "NoteSync - Capture Your Ideas, Anytime, Anywhere",
       },
     ],
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "NoteSync - Cloud-Based Note-Taking App",
-    description: "Capture your ideas effortlessly with NoteSync. Secure, fast, and accessible anytime, anywhere.",
-    images: ["https://notesync-site.netlify.app/images/ogimage.png"],
-    creator: "@Vinod_Jangid07",
   },
 };
 
