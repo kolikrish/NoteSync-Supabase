@@ -21,7 +21,7 @@
 ## 🛠 Tech Stack
 
 ### Frontend:
-- **React** – Component-based UI
+- **NextJs** – Component-based UI
 - **TypeScript** – Strongly-typed JS for reliability
 - **Tailwind CSS** – Utility-first styling (if used)
 
