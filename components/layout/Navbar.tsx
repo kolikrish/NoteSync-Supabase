@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image"; // Commented out as per instruction
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
@@ -68,6 +68,8 @@ export default function Navbar() {
     };
   }, []);
 
+  // Commented out fetching and use of the user profile image, only logo remains
+  /*
   async function fetchUserProfile(userId: string) {
     try {
       const { data, error } = await supabase
@@ -91,6 +93,9 @@ export default function Navbar() {
       console.error("Profile fetch exception:", error);
     }
   }
+  */
+  // Instead, dummy fetchUserProfile for compatibility
+  function fetchUserProfile(userId: string) {}
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -142,6 +147,8 @@ export default function Navbar() {
     return user?.email?.split("@")[0] || "";
   };
 
+  // Comment out image fetching - return only a default logo or null
+  /*
   const getUserAvatar = () => {
     if (userProfile?.avatar_url) {
       return (
@@ -165,6 +172,26 @@ export default function Navbar() {
       </div>
     );
   };
+  */
+  // Instead, always return just the site logo
+  const getUserAvatar = () => (
+    <div className="w-9 h-9 rounded-full flex items-center justify-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 text-purple-600"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+        />
+      </svg>
+    </div>
+  );
 
   return (
     <nav className="sticky top-0 z-50 bg-white backdrop-blur-lg bg-opacity-80">

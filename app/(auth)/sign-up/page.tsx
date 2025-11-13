@@ -37,7 +37,7 @@ export default function SignUpPage() {
             return
         }
         
-        router.push('/sign-in?message=Check your email to confirm your account')
+        router.push('/sign-in?message=Register successfully. You can Login now.');
     }
     
     return (

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+// import Image from "next/image"; // Commented out as image is not working in Supabase
 
 interface ProfileFormProps {
   userId: string;
@@ -17,13 +17,12 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
     created_at?: string;
   } | null>(null);
 
-
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [fullName, setFullName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  // const [avatarUrl, setAvatarUrl] = useState<string | null>(null); // Commented out as image is not working in Supabase
+  // const [avatarFile, setAvatarFile] = useState<File | null>(null); // Commented out as image is not working in Supabase
+  // const [avatarPreview, setAvatarPreview] = useState<string | null>(null); // Commented out as image is not working in Supabase
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("profile");
@@ -75,13 +74,13 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
       if (data) {
         // setProfile(data);
         setFullName(data.full_name || "");
-        setAvatarUrl(data.avatar_url);
+        // setAvatarUrl(data.avatar_url); // Commented out as image is not working in Supabase
 
-        if (data.avatar_url) {
-          const img = new window.Image();
-          img.onerror = () => console.error("Image URL failed to load");
-          img.src = data.avatar_url;
-        }
+        // if (data.avatar_url) {
+        //   const img = new window.Image();
+        //   img.onerror = () => console.error("Image URL failed to load");
+        //   img.src = data.avatar_url;
+        // }
       } else {
         await createProfile(userId);
       }
@@ -91,14 +90,14 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
       setLoading(false);
     }
   }
-  
+
   async function createProfile(userId: string) {
     try {
       const { error } = await supabase.from("profiles").insert([
         {
           id: userId,
           full_name: "",
-          avatar_url: null,
+          // avatar_url: null, // Commented out as image is not working in Supabase
           updated_at: new Date().toISOString(),
         },
       ]);
@@ -113,95 +112,85 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
       console.error("Error in createProfile:", error);
     }
   }
-  function isValidImageFile(file: File) {
-    // List of allowed MIME types for images
-    const validImageTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/svg+xml",
-      "image/bmp",
-    ];
 
-    // Check file type
-    if (!validImageTypes.includes(file.type)) {
-      return {
-        valid: false,
-        error: "File must be a valid image (JPEG, PNG, GIF, etc.)",
-      };
-    }
+  // function isValidImageFile(file: File) {
+  //   // List of allowed MIME types for images
+  //   const validImageTypes = [
+  //     "image/jpeg",
+  //     "image/png",
+  //     "image/gif",
+  //     "image/webp",
+  //     "image/svg+xml",
+  //     "image/bmp",
+  //   ];
+  //   // Check file type
+  //   if (!validImageTypes.includes(file.type)) {
+  //     return {
+  //       valid: false,
+  //       error: "File must be a valid image (JPEG, PNG, GIF, etc.)",
+  //     };
+  //   }
+  //   // Check file size (limit to 5MB)
+  //   const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+  //   if (file.size > maxSizeInBytes) {
+  //     return {
+  //       valid: false,
+  //       error: "Image size must be less than 5MB",
+  //     };
+  //   }
+  //   return { valid: true, error: null };
+  // }
 
-    // Check file size (limit to 5MB)
-    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSizeInBytes) {
-      return {
-        valid: false,
-        error: "Image size must be less than 5MB",
-      };
-    }
+  // function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   if (!e.target.files || e.target.files.length === 0) {
+  //     setAvatarFile(null);
+  //     setAvatarPreview(null);
+  //     return;
+  //   }
+  //   const file = e.target.files[0];
+  //   const validation = isValidImageFile(file);
+  //   if (!validation.valid) {
+  //     setError(validation.error);
+  //     e.target.value = "";
+  //     return;
+  //   }
+  //   setError(null);
+  //   setAvatarFile(file);
+  //   // Create preview
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     setAvatarPreview(e.target?.result as string);
+  //   };
+  //   reader.readAsDataURL(file);
+  // }
 
-    return { valid: true, error: null };
-  }
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!e.target.files || e.target.files.length === 0) {
-      setAvatarFile(null);
-      setAvatarPreview(null);
-      return;
-    }
-
-    const file = e.target.files[0];
-
-    const validation = isValidImageFile(file);
-    if (!validation.valid) {
-      setError(validation.error);
-      e.target.value = "";
-      return;
-    }
-
-    setError(null);
-    setAvatarFile(file);
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setAvatarPreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  async function uploadAvatar(userId: string, file: File) {
-    try {
-      const validation = isValidImageFile(file);
-      if (!validation.valid) {
-        throw new Error(validation.error || "Invalid file");
-      }
-
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now().toString()}.${fileExt}`;
-      const filePath = `avatars/${userId}/${fileName}`;
-      const { error: uploadError } = await supabase.storage
-        .from("profile-images")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data } = supabase.storage
-        .from("profile-images")
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error("Error in uploadAvatar:", error);
-      throw error;
-    }
-  }
+  // async function uploadAvatar(userId: string, file: File) {
+  //   try {
+  //     const validation = isValidImageFile(file);
+  //     if (!validation.valid) {
+  //       throw new Error(validation.error || "Invalid file");
+  //     }
+  //     const fileExt = file.name.split(".").pop();
+  //     const fileName = `${Date.now().toString()}.${fileExt}`;
+  //     const filePath = `avatars/${userId}/${fileName}`;
+  //     const { error: uploadError } = await supabase.storage
+  //       .from("profile-images")
+  //       .upload(filePath, file, {
+  //         cacheControl: "3600",
+  //         upsert: true,
+  //       });
+  //     if (uploadError) {
+  //       throw uploadError;
+  //     }
+  //     const { data } = supabase.storage
+  //       .from("profile-images")
+  //       .getPublicUrl(filePath);
+  //     return data.publicUrl;
+  //   } catch (error) {
+  //     console.error("Error in uploadAvatar:", error);
+  //     throw error;
+  //   }
+  // }
 
   async function handleProfileUpdate(e: React.FormEvent) {
     e.preventDefault();
@@ -214,15 +203,15 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
     setSuccessMessage(null);
 
     try {
-      let newAvatarUrl = avatarUrl;
+      // let newAvatarUrl = avatarUrl; // Commented out as image is not working in Supabase
 
-      if (avatarFile) {
-        newAvatarUrl = await uploadAvatar(user.id, avatarFile);
-      }
+      // if (avatarFile) {
+      //   newAvatarUrl = await uploadAvatar(user.id, avatarFile);
+      // }
 
       const updateData = {
         full_name: fullName,
-        avatar_url: newAvatarUrl,
+        // avatar_url: newAvatarUrl, // Commented out as image is not working in Supabase
         updated_at: new Date().toISOString(),
       };
 
@@ -239,7 +228,7 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
             .insert({
               id: user.id,
               full_name: fullName,
-              avatar_url: newAvatarUrl,
+              // avatar_url: newAvatarUrl, // Commented out as image is not working in Supabase
               updated_at: new Date().toISOString(),
             });
 
@@ -262,9 +251,9 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
       }
 
       setSuccessMessage("Profile updated successfully!");
-      setAvatarUrl(newAvatarUrl);
-      setAvatarFile(null);
-      setAvatarPreview(null);
+      // setAvatarUrl(newAvatarUrl); // Commented out as image is not working in Supabase
+      // setAvatarFile(null); // Commented out as image is not working in Supabase
+      // setAvatarPreview(null); // Commented out as image is not working in Supabase
 
       fetchProfile(user.id);
     } catch (error: unknown) {
@@ -333,7 +322,8 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
               transition={{ duration: 0.5 }}
             >
               <div className="h-32 w-32 rounded-full border-4 border-gray-50 shadow-lg overflow-hidden">
-                {avatarPreview || avatarUrl ? (
+                {/* Image avatar has been disabled as image functionality in Supabase is not working */}
+                {/* {avatarPreview || avatarUrl ? (
                   <Image
                     src={avatarPreview || avatarUrl || ""}
                     alt={fullName || "Profile"}
@@ -343,11 +333,11 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
                     unoptimized={!!avatarPreview}
                     priority
                   />
-                ) : (
+                ) : ( */}
                   <div className="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-4xl font-bold text-white">
                     {user?.email?.charAt(0).toUpperCase()}
                   </div>
-                )}
+                {/* )} */}
               </div>
             </motion.div>
 
@@ -525,6 +515,8 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
                     </p>
                   </div>
 
+                  {/* Avatar upload is currently disabled */}
+                  {/* 
                   <div>
                     <label
                       htmlFor="avatar"
@@ -555,6 +547,7 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
                       </div>
                     </div>
                   </div>
+                  */}
 
                   <div className="pt-5">
                     <div className="flex justify-end">
