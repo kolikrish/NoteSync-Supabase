@@ -95,7 +95,7 @@ export default function Navbar() {
   }
   */
   // Instead, dummy fetchUserProfile for compatibility
-  function fetchUserProfile(userId: string) {}
+  // function fetchUserProfile(userId: string) {}
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
